@@ -14,7 +14,9 @@ async function resolveMigrationDir(): Promise<string> {
       if (stat.isDirectory()) {
         return candidate;
       }
-    } catch {}
+    } catch {
+      // directory does not exist, try next candidate
+    }
   }
 
   throw new Error("Migrations directory not found");

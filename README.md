@@ -12,6 +12,7 @@ Monolithic Node.js + Express + PostgreSQL service for email notifications about 
 - Email delivery via SMTP (Mailpit included in `docker-compose.yml` for local testing).
 - Auto-applied SQL migrations on every service startup.
 - GitHub API rate limit handling with automatic backoff.
+- Optional API key authentication via `X-API-Key` header.
 
 ## Architecture & Design Decisions
 
@@ -94,6 +95,7 @@ cp .env.example .env
 | `SMTP_USER` | _(empty)_ | SMTP username |
 | `SMTP_PASS` | _(empty)_ | SMTP password |
 | `SMTP_FROM` | `alerts@example.com` | Sender address |
+| `API_KEY` | _(empty)_ | API key for `X-API-Key` header authentication. If empty — auth is disabled |
 
 ## Run with Docker
 
@@ -121,7 +123,7 @@ PostgreSQL must be available and `DATABASE_URL` must point to it.
 ## Example flow
 
 ```bash
-# 1. Subscribe
+# 1. Subscribe (add -H "X-API-Key: <key>" if API_KEY is set)
 curl -X POST http://localhost:3000/subscriptions \
   -H "Content-Type: application/json" \
   -d '{"email":"you@example.com","repository":"renovatebot/renovate"}'
@@ -141,8 +143,9 @@ On the next scanner cycle (or immediately at startup), if a new release tag is d
 npm test
 ```
 
-Unit tests (16 total) cover:
+Unit tests (23 total) cover:
 
 - `SubscriptionService`: happy path, invalid `owner/repo` format (400), GitHub repo not found (404), subscription list delegation.
 - `ReleaseScanner`: notification on new tag, skip when tag unchanged, global backoff on 429.
 - `GithubClient`: successful responses, 404, 429 with `retry-after`, 403 as rate limit (`x-ratelimit-remaining: 0`), 403 as auth error (`GITHUB_FORBIDDEN`), `getLatestRelease` returning null on 404 and propagating rate limit errors.
+- `ApiKeyMiddleware`: auth disabled when key not configured, correct key passes, wrong key returns 401, missing header returns 401.
