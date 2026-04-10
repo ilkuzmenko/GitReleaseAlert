@@ -3,6 +3,7 @@ import path from "node:path";
 import { Counter, Histogram, Registry } from "prom-client";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
+import { buildApiKeyMiddleware } from "./api/middleware/api-key-auth";
 import { errorHandler } from "./api/middleware/error-handler";
 import { buildHttpMetricsMiddleware } from "./api/middleware/http-metrics";
 import { buildMetricsRouter } from "./api/routes/metrics";
@@ -13,7 +14,8 @@ export function buildApp(
   subscriptionService: SubscriptionService,
   registry: Registry,
   httpRequestsTotal: Counter<"method" | "route" | "status_code">,
-  httpRequestDurationSeconds: Histogram<"method" | "route" | "status_code">
+  httpRequestDurationSeconds: Histogram<"method" | "route" | "status_code">,
+  apiKey: string
 ): express.Express {
   const app = express();
   const openApiPath = path.join(process.cwd(), "openapi.yaml");
@@ -27,7 +29,7 @@ export function buildApp(
     res.status(200).json({ ok: true });
   });
   app.use("/metrics", buildMetricsRouter(registry));
-  app.use("/subscriptions", buildSubscriptionsRouter(subscriptionService));
+  app.use("/subscriptions", buildApiKeyMiddleware(apiKey), buildSubscriptionsRouter(subscriptionService));
   app.use(errorHandler);
 
   return app;

@@ -51,7 +51,7 @@ async function bootstrap(): Promise<void> {
   });
 
   const subscriptionService = new SubscriptionService(repositoriesRepository, subscriptionsRepository, githubClient);
-  const app = buildApp(subscriptionService, registry, httpRequestsTotal, httpRequestDurationSeconds);
+  const app = buildApp(subscriptionService, registry, httpRequestsTotal, httpRequestDurationSeconds, config.apiKey);
 
   const scanner = new ReleaseScanner(
     repositoriesRepository,

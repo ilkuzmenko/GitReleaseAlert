@@ -4,6 +4,8 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:3000
+security: []
+
 paths:
   /health:
     get:
@@ -14,6 +16,8 @@ paths:
   /subscriptions:
     post:
       summary: Create email subscription for repository releases
+      security:
+        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
@@ -45,6 +49,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "502":
           description: Upstream API failure
           content:
@@ -53,6 +63,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
     get:
       summary: List subscriptions
+      security:
+        - ApiKeyAuth: []
       responses:
         "200":
           description: Subscriptions list
@@ -66,9 +78,17 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Subscription"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /subscriptions/{id}:
     delete:
       summary: Deactivate subscription
+      security:
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -84,6 +104,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Subscription not found
           content:
@@ -91,6 +117,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
   schemas:
     CreateSubscriptionRequest:
       type: object

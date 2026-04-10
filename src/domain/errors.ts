@@ -21,6 +21,12 @@ export class NotFoundError extends AppError {
   }
 }
 
+export class UnauthorizedError extends AppError {
+  constructor(message = "Unauthorized") {
+    super(message, 401, "UNAUTHORIZED");
+  }
+}
+
 export class ExternalApiError extends AppError {
   public readonly retryAfterSeconds: number | null;
 

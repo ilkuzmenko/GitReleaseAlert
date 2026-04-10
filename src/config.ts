@@ -19,5 +19,6 @@ export const config = {
   smtpPort: Number(process.env.SMTP_PORT ?? 1025),
   smtpUser: process.env.SMTP_USER ?? "",
   smtpPass: process.env.SMTP_PASS ?? "",
-  smtpFrom: env("SMTP_FROM", "alerts@example.com")
+  smtpFrom: env("SMTP_FROM", "alerts@example.com"),
+  apiKey: process.env.API_KEY ?? ""
 };
