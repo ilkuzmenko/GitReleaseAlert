@@ -1,7 +1,7 @@
 import { Counter } from "prom-client";
 import { ExternalApiError } from "../domain/errors";
-import { RepositoriesRepository } from "../infra/db/repositories-repository";
-import { SubscriptionsRepository } from "../infra/db/subscriptions-repository";
+import { RepositoriesRepository } from "../infra/db/repository/repositories-repository";
+import { SubscriptionsRepository } from "../infra/db/repository/subscriptions-repository";
 import { GithubClient } from "../infra/github/github-client";
 import { EmailNotifier } from "../infra/notifier/email-notifier";
 
@@ -27,6 +27,8 @@ export class ReleaseScanner {
     }
 
     const repositories = await this.repositoriesRepository.getRepositoriesWithActiveSubscriptions();
+    let hasErrors = false;
+
     for (const repository of repositories) {
       try {
         const latestRelease = await this.githubClient.getLatestRelease(repository.owner, repository.name);
@@ -56,11 +58,11 @@ export class ReleaseScanner {
           return;
         }
         console.error("Scanner failed for repository", repository.fullName, error);
-        this.metrics?.runsTotal.inc({ result: "error" });
+        hasErrors = true;
       }
     }
 
-    this.metrics?.runsTotal.inc({ result: "ok" });
+    this.metrics?.runsTotal.inc({ result: hasErrors ? "error" : "ok" });
   }
 }
 

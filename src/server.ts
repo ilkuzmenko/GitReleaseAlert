@@ -2,9 +2,9 @@ import { buildApp } from "./app";
 import { config } from "./config";
 import { SubscriptionService } from "./domain/subscriptions/subscription-service";
 import { pool } from "./infra/db/client";
-import { RepositoriesRepository } from "./infra/db/repositories-repository";
+import { RepositoriesRepository } from "./infra/db/repository/repositories-repository";
 import { runMigrations } from "./infra/db/run-migrations";
-import { SubscriptionsRepository } from "./infra/db/subscriptions-repository";
+import { SubscriptionsRepository } from "./infra/db/repository/subscriptions-repository";
 import { GithubClient } from "./infra/github/github-client";
 import {
   githubApiRequestsTotal,

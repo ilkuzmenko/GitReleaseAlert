@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { NotFoundError, ValidationError } from "../errors";
 import { SubscriptionView } from "../models";
-import { RepositoriesRepository } from "../../infra/db/repositories-repository";
-import { SubscriptionsRepository } from "../../infra/db/subscriptions-repository";
+import { RepositoriesRepository } from "../../infra/db/repository/repositories-repository";
+import { SubscriptionsRepository } from "../../infra/db/repository/subscriptions-repository";
 import { GithubClient } from "../../infra/github/github-client";
 
 const createSubscriptionSchema = z.object({

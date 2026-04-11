@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { ReleaseInfo, RepositoryRecord } from "../../domain/models";
+import { ReleaseInfo, RepositoryRecord } from "../../../domain/models";
 
 function mapRepository(row: Record<string, unknown>): RepositoryRecord {
   return {

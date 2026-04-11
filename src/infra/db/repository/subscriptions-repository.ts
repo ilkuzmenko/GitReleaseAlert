@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { SubscriptionRecord, SubscriptionView } from "../../domain/models";
+import { SubscriptionRecord, SubscriptionView } from "../../../domain/models";
 
 function mapSubscription(row: Record<string, unknown>): SubscriptionRecord {
   return {
@@ -33,7 +33,7 @@ export class SubscriptionsRepository {
        FROM subscriptions s
        JOIN repositories r ON r.id = s.repository_id
        WHERE s.is_active = true
-       ORDER BY s.id ASC`
+       ORDER BY s.id`
     );
     return result.rows.map((row: Record<string, unknown>) => ({
       id: Number(row.id),
