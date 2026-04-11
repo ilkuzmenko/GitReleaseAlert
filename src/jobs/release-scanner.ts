@@ -41,8 +41,12 @@ export class ReleaseScanner {
         await this.repositoriesRepository.updateLastSeen(repository.id, latestRelease);
         const emails = await this.subscriptionsRepository.getActiveEmailsByRepositoryId(repository.id);
         for (const email of emails) {
-          await this.emailNotifier.notifyNewRelease(email, repository.fullName, latestRelease.tagName, latestRelease.htmlUrl);
-          this.metrics?.notificationsSentTotal.inc();
+          try {
+            await this.emailNotifier.notifyNewRelease(email, repository.fullName, latestRelease.tagName, latestRelease.htmlUrl);
+            this.metrics?.notificationsSentTotal.inc();
+          } catch (emailError) {
+            console.error("Failed to send email to", email, "for", repository.fullName, emailError);
+          }
         }
       } catch (error) {
         if (error instanceof ExternalApiError && error.statusCode === 429) {
