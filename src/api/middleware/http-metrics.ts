@@ -9,7 +9,16 @@ export function buildHttpMetricsMiddleware(
     const end = requestDuration.startTimer();
 
     res.on("finish", () => {
-      const route = req.route?.path ?? req.path;
+      let route: string;
+      if (req.route) {
+        const cleanUrl = req.originalUrl.split("?")[0];
+        const routePath = req.route.path as string;
+        route = routePath === "/"
+          ? cleanUrl
+          : cleanUrl.replace(new RegExp(routePath.replace(/:\w+/g, "[^/]+") + "$"), routePath);
+      } else {
+        route = req.path;
+      }
       const labels = {
         method: req.method,
         route,
