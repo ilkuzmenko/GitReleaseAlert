@@ -33,6 +33,11 @@ export class GithubClient {
       throw new NotFoundError("Repository not found");
     }
 
+    if (response.status === 401) {
+      this.requestsTotal?.inc({ status: "401" });
+      throw new ExternalApiError("GitHub API token is invalid", 401, "GITHUB_UNAUTHORIZED");
+    }
+
     if (response.status === 429) {
       const retryAfter = Number(response.headers.get("retry-after"));
       const resetAt = Number(response.headers.get("x-ratelimit-reset"));

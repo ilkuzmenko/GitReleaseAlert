@@ -33,6 +33,19 @@ describe("GithubClient", () => {
     });
   });
 
+  describe("authentication", () => {
+    it("throws GITHUB_UNAUTHORIZED on 401", async () => {
+      mockFetch(401);
+      const client = new GithubClient();
+
+      const error = await client.assertRepositoryExists("foo", "bar").catch((e) => e);
+
+      expect(error).toBeInstanceOf(ExternalApiError);
+      expect(error.statusCode).toBe(401);
+      expect(error.code).toBe("GITHUB_UNAUTHORIZED");
+    });
+  });
+
   describe("rate limiting", () => {
     it("throws GITHUB_RATE_LIMIT on 429 and reads retry-after header", async () => {
       mockFetch(429, { "retry-after": "30" });
