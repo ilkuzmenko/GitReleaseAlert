@@ -1,6 +1,7 @@
 import { Counter } from "prom-client";
 import { ExternalApiError, NotFoundError } from "../../domain/errors";
 import { ReleaseInfo } from "../../domain/models";
+import { GithubClientPort } from "../../domain/ports/github-client";
 
 type GithubRepoResponse = {
   full_name: string;
@@ -12,7 +13,7 @@ type GithubReleaseResponse = {
   html_url: string;
 };
 
-export class GithubClient {
+export class GithubClient implements GithubClientPort {
   private readonly baseUrl = "https://api.github.com";
 
   constructor(

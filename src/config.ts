@@ -20,5 +20,6 @@ export const config = {
   smtpUser: process.env.SMTP_USER ?? "",
   smtpPass: process.env.SMTP_PASS ?? "",
   smtpFrom: env("SMTP_FROM", "alerts@example.com"),
-  apiKey: process.env.API_KEY ?? ""
+  apiKey: process.env.API_KEY ?? "",
+  redisUrl: env("REDIS_URL", "redis://localhost:6379")
 };

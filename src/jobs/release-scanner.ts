@@ -2,7 +2,7 @@ import { Counter } from "prom-client";
 import { ExternalApiError } from "../domain/errors";
 import { RepositoriesRepository } from "../infra/db/repository/repositories-repository";
 import { SubscriptionsRepository } from "../infra/db/repository/subscriptions-repository";
-import { GithubClient } from "../infra/github/github-client";
+import { GithubClientPort } from "../domain/ports/github-client";
 import { EmailNotifier } from "../infra/notifier/email-notifier";
 
 type ScannerMetrics = {
@@ -16,7 +16,7 @@ export class ReleaseScanner {
   constructor(
     private readonly repositoriesRepository: RepositoriesRepository,
     private readonly subscriptionsRepository: SubscriptionsRepository,
-    private readonly githubClient: GithubClient,
+    private readonly githubClient: GithubClientPort,
     private readonly emailNotifier: EmailNotifier,
     private readonly metrics?: ScannerMetrics
   ) {}

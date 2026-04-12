@@ -5,6 +5,8 @@ import { pool } from "./infra/db/client";
 import { RepositoriesRepository } from "./infra/db/repository/repositories-repository";
 import { runMigrations } from "./infra/db/run-migrations";
 import { SubscriptionsRepository } from "./infra/db/repository/subscriptions-repository";
+import { CachedGithubClient } from "./infra/cache/cached-github-client";
+import { redisClient } from "./infra/cache/redis-client";
 import { GithubClient } from "./infra/github/github-client";
 import {
   githubApiRequestsTotal,
@@ -37,11 +39,13 @@ async function runMigrationsWithRetry(maxAttempts = 20, delayMs = 1500): Promise
 }
 
 async function bootstrap(): Promise<void> {
+  await redisClient.connect();
   await runMigrationsWithRetry();
 
   const repositoriesRepository = new RepositoriesRepository(pool);
   const subscriptionsRepository = new SubscriptionsRepository(pool);
   const githubClient = new GithubClient(config.githubToken, githubApiRequestsTotal);
+  const cachedGithubClient = new CachedGithubClient(githubClient, redisClient);
   const emailNotifier = new SmtpEmailNotifier({
     host: config.smtpHost,
     port: config.smtpPort,
@@ -50,13 +54,13 @@ async function bootstrap(): Promise<void> {
     from: config.smtpFrom
   });
 
-  const subscriptionService = new SubscriptionService(repositoriesRepository, subscriptionsRepository, githubClient);
+  const subscriptionService = new SubscriptionService(repositoriesRepository, subscriptionsRepository, cachedGithubClient);
   const app = buildApp(subscriptionService, registry, httpRequestsTotal, httpRequestDurationSeconds, config.apiKey);
 
   const scanner = new ReleaseScanner(
     repositoriesRepository,
     subscriptionsRepository,
-    githubClient,
+    cachedGithubClient,
     emailNotifier,
     { runsTotal: scannerRunsTotal, notificationsSentTotal: scannerNotificationsSentTotal }
   );

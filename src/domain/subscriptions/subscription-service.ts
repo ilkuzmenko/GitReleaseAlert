@@ -3,7 +3,7 @@ import { NotFoundError, ValidationError } from "../errors";
 import { SubscriptionView } from "../models";
 import { RepositoriesRepository } from "../../infra/db/repository/repositories-repository";
 import { SubscriptionsRepository } from "../../infra/db/repository/subscriptions-repository";
-import { GithubClient } from "../../infra/github/github-client";
+import { GithubClientPort } from "../ports/github-client";
 
 const createSubscriptionSchema = z.object({
   email: z.email(),
@@ -14,7 +14,7 @@ export class SubscriptionService {
   constructor(
     private readonly repositoriesRepository: RepositoriesRepository,
     private readonly subscriptionsRepository: SubscriptionsRepository,
-    private readonly githubClient: GithubClient
+    private readonly githubClient: GithubClientPort
   ) {}
 
   async createSubscription(input: { email: string; repository: string }): Promise<SubscriptionView> {

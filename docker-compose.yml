@@ -15,12 +15,19 @@ services:
       timeout: 3s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
   app:
     build: .
     depends_on:
       postgres:
         condition: service_healthy
       mailpit:
+        condition: service_started
+      redis:
         condition: service_started
     env_file:
       - .env

@@ -96,6 +96,7 @@ cp .env.example .env
 | `SMTP_PASS` | _(empty)_ | SMTP password |
 | `SMTP_FROM` | `alerts@example.com` | Sender address |
 | `API_KEY` | _(empty)_ | API key for `X-API-Key` header authentication. If empty — auth is disabled |
+| `REDIS_URL` | `redis://localhost:6379` | Redis connection string for GitHub API response caching (TTL 10 min) |
 
 ## Run with Docker
 
