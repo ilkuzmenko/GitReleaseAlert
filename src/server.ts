@@ -18,6 +18,7 @@ import {
 } from "./infra/metrics/registry";
 import { SmtpEmailNotifier } from "./infra/notifier/email-notifier";
 import { ReleaseScanner, startScannerLoop } from "./jobs/release-scanner";
+import { buildGrpcServer, startGrpcServer } from "./grpc/server";
 
 async function sleep(ms: number): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms));
@@ -66,6 +67,9 @@ async function bootstrap(): Promise<void> {
   );
   startScannerLoop(scanner, config.scanIntervalMs);
   await scanner.runOnce();
+
+  const grpcServer = buildGrpcServer(subscriptionService, config.apiKey);
+  startGrpcServer(grpcServer, config.grpcPort);
 
   app.listen(config.port, () => {
     console.log(`Server listening on :${config.port}`);

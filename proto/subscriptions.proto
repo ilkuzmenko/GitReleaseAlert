@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package subscriptions;
+
+service SubscriptionService {
+  rpc CreateSubscription(CreateSubscriptionRequest) returns (SubscriptionResponse);
+  rpc ListSubscriptions(Empty)                      returns (ListSubscriptionsResponse);
+  rpc DeactivateSubscription(DeactivateRequest)     returns (Empty);
+}
+
+message CreateSubscriptionRequest {
+  string email      = 1;
+  string repository = 2;
+}
+
+message SubscriptionResponse {
+  int32  id         = 1;
+  string email      = 2;
+  string repository = 3;
+  bool   is_active  = 4;
+  string created_at = 5;
+}
+
+message ListSubscriptionsResponse {
+  repeated SubscriptionResponse subscriptions = 1;
+}
+
+message DeactivateRequest {
+  int32 id = 1;
+}
+
+message Empty {}

@@ -6,8 +6,8 @@ import YAML from "yamljs";
 import { buildApiKeyMiddleware } from "./api/middleware/api-key-auth";
 import { errorHandler } from "./api/middleware/error-handler";
 import { buildHttpMetricsMiddleware } from "./api/middleware/http-metrics";
-import { buildMetricsRouter } from "./api/routes/metrics";
-import { buildSubscriptionsRouter } from "./api/routes/subscriptions";
+import { buildMetricsRouter } from "./api/handlers/metrics";
+import { buildSubscriptionsRouter } from "./api/handlers/subscriptions";
 import { SubscriptionService } from "./domain/subscriptions/subscription-service";
 
 export function buildApp(

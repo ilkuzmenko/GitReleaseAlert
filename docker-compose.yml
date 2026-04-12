@@ -33,6 +33,7 @@ services:
       - .env
     ports:
       - "3000:3000"
+      - "50051:50051"
 
   mailpit:
     image: axllent/mailpit:v1.26

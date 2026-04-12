@@ -21,5 +21,6 @@ export const config = {
   smtpPass: process.env.SMTP_PASS ?? "",
   smtpFrom: env("SMTP_FROM", "alerts@example.com"),
   apiKey: process.env.API_KEY ?? "",
-  redisUrl: env("REDIS_URL", "redis://localhost:6379")
+  redisUrl: env("REDIS_URL", "redis://localhost:6379"),
+  grpcPort: Number(process.env.GRPC_PORT ?? 50051)
 };
