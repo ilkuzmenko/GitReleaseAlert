@@ -19,7 +19,8 @@ function loadPackage(): grpc.GrpcObject {
 
 export function buildGrpcServer(subscriptionService: SubscriptionService, apiKey: string): grpc.Server {
   const pkg = loadPackage();
-  const { SubscriptionService: ServiceDef } = (pkg as any).subscriptions;
+  const subscriptionsPkg = pkg["subscriptions"] as grpc.GrpcObject;
+  const ServiceDef = subscriptionsPkg["SubscriptionService"] as grpc.ServiceClientConstructor;
 
   const server = new grpc.Server();
   server.addService(ServiceDef.service, makeSubscriptionHandlers(subscriptionService, apiKey));
