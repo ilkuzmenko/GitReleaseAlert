@@ -98,6 +98,26 @@ cp .env.example .env
 | `API_KEY` | _(empty)_ | API key for `X-API-Key` header authentication. If empty — auth is disabled |
 | `REDIS_URL` | `redis://localhost:6379` | Redis connection string for GitHub API response caching (TTL 10 min) |
 
+## Live Demo (AWS)
+
+API is deployed on AWS EC2 at `http://34.240.211.192`.
+
+| Endpoint | URL |
+|----------|-----|
+| REST API | `http://34.240.211.192/subscriptions` |
+| Swagger UI | `http://34.240.211.192/docs` |
+| gRPC | `34.240.211.192:50051` |
+| Health | `http://34.240.211.192/health` |
+
+<details>
+<summary>Access credentials</summary>
+
+```
+X-API-Key: 576254d5-650c-42c3-9034-306af1473962
+```
+
+</details>
+
 ## Run with Docker
 
 ```bash
